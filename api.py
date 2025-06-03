@@ -1,21 +1,20 @@
 from flask import Flask, request, jsonify
-from flask_cors import CORS
+import os
 
 app = Flask(__name__)
-CORS(app)  # permite accesul din Thunkable sau browser
 
-@app.route("/is_even", methods=["POST"])
+@app.route("/is_even", methods=["GET"])
 def is_even():
-    data = request.get_json()
-    if not data or "number" not in data:
-        return jsonify({"error": "Trimite un câmp 'number'"}), 400
+    number_str = request.args.get("number")
+    if number_str is None:
+        return jsonify({"error": "No number provided"}), 400
 
-    number = data["number"]
-    if not isinstance(number, int):
-        return jsonify({"error": "Valoarea trebuie să fie un număr întreg"}), 400
-
-    este_par = number % 2 == 0
-    return jsonify({"par": este_par})
+    try:
+        number = int(number_str)
+        return jsonify({"even": number % 2 == 0})
+    except ValueError:
+        return jsonify({"error": "Invalid number"}), 400
 
 if __name__ == "__main__":
-    app.run(host="0.0.0.0", port=10000)
+    port = int(os.environ.get("PORT", 10000))  # Railway va seta PORT automat
+    app.run(host="0.0.0.0", port=port)
