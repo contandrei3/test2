@@ -16,7 +16,5 @@ def is_even():
         return jsonify({"error": "Invalid number"}), 400
 
 if __name__ == "__main__":
-    import os
-    port = int(os.environ.get("PORT", 10000))  # ia portul din env, default 10000
+    port = int(os.environ.get("PORT", 10000))  # Folosește PORT de la Railway sau default 10000
     app.run(host="0.0.0.0", port=port)
-
